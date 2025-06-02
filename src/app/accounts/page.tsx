@@ -5,7 +5,6 @@ import {
   Box,
   Heading,
   Text,
-  Button,
   Input,
   InputGroup,
   InputLeftElement,
@@ -19,18 +18,16 @@ import {
   TableContainer,
   IconButton,
   HStack,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
   Flex,
-  Spacer,
   Tag,
   Avatar,
   useColorModeValue,
   Icon
 } from '@chakra-ui/react'
-import { ChevronRightIcon, SearchIcon, EditIcon, Trash2Icon, EyeIcon, PlusIcon, FilterIcon, BriefcaseIcon, UsersIcon, BuildingIcon } from 'lucide-react'
+import { SearchIcon, EditIcon, Trash2Icon, EyeIcon, PlusIcon, FilterIcon, BriefcaseIcon, UsersIcon, BuildingIcon } from 'lucide-react'
 import { useState } from 'react'
+import AppLayout from '@/components/layouts/AppLayout'; 
+import { Button } from '@/components/ui/Button';
 
 const mockAccounts = [
   {
@@ -94,6 +91,8 @@ export default function AccountsPage() {
   const cardBg = useColorModeValue('white', 'gray.700');
   const textColor = useColorModeValue('gray.600', 'gray.300');
   const borderColor = useColorModeValue('gray.200', 'gray.600');
+  const headingColor = useColorModeValue('gray.700', 'white');
+  const primaryColor = "#0056B3"; // From design system
 
   const filteredAccounts = mockAccounts.filter(account => 
     account.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
@@ -101,44 +100,39 @@ export default function AccountsPage() {
     (filterType === '' || account.type === filterType)
   );
 
-  return (
-    <Box p={8} bg={useColorModeValue('gray.50', 'gray.800')} minH="100vh">
-      <Breadcrumb spacing="8px" separator={<ChevronRightIcon color="gray.500" />} mb={6}>
-        <BreadcrumbItem>
-          <NextLink href="/dashboard" passHref>
-            <BreadcrumbLink>Dashboard</BreadcrumbLink>
-          </NextLink>
-        </BreadcrumbItem>
-        <BreadcrumbItem isCurrentPage>
-          <BreadcrumbLink href="#">Accounts</BreadcrumbLink>
-        </BreadcrumbItem>
-      </Breadcrumb>
+  const breadcrumbs = [
+    { label: 'Dashboard', href: '/dashboard' },
+    { label: 'Accounts' }
+  ];
 
-      <Flex mb={8} alignItems="center">
+  return (
+    <AppLayout breadcrumbs={breadcrumbs}>
+      <Flex mb={6} alignItems="center" justifyContent="space-between" wrap="wrap" gap={4}>
         <Box>
-          <Heading as="h1" size="xl" fontFamily="Poppins, sans-serif" color={useColorModeValue('gray.700', 'white')}>Manage Accounts</Heading>
-          <Text mt={1} color={textColor} fontSize="md">View, create, and manage your company accounts.</Text>
+          <Heading as="h1" size="xl" fontFamily="var(--font-poppins)" color={headingColor}>Manage Accounts</Heading>
+          <Text mt={1} color={textColor} fontSize="md" fontFamily="var(--font-inter)">View, create, and manage your company accounts.</Text>
         </Box>
-        <Spacer />
         <NextLink href="/accounts/new" passHref>
-          <Button as="a" leftIcon={<PlusIcon size={18} />} colorScheme="blue" variant="solid" size="md" boxShadow="md" _hover={{ bg: 'blue.600' }}>
+          <Button as="a" leftIcon={<Icon as={PlusIcon} size={18} />} variant="primary" size="md" fontFamily="var(--font-inter)">
             Add New Account
           </Button>
         </NextLink>
       </Flex>
 
       <Box bg={cardBg} p={6} borderRadius="lg" shadow="lg" borderWidth="1px" borderColor={borderColor}>
-        <HStack spacing={4} mb={6}>
-          <InputGroup flex={2}>
+        <HStack spacing={4} mb={6} wrap={{base: "wrap", md: "nowrap"}}>
+          <InputGroup flex={{base: "1 1 100%", md: 2}}>
             <InputLeftElement pointerEvents="none">
-              <SearchIcon color="gray.400" size={20} />
+              <Icon as={SearchIcon} color="gray.400" boxSize={5} />
             </InputLeftElement>
             <Input 
               placeholder="Search by account name..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               borderRadius="md"
-              _focus={{ borderColor: 'blue.500', boxShadow: `0 0 0 1px var(--chakra-colors-blue-500)`}}
+              borderColor={borderColor}
+              fontFamily="var(--font-inter)"
+              _focus={{ borderColor: primaryColor, boxShadow: `0 0 0 1px ${primaryColor}`}}
             />
           </InputGroup>
           <Select 
@@ -146,59 +140,62 @@ export default function AccountsPage() {
             flex={1} 
             value={filterIndustry} 
             onChange={(e) => setFilterIndustry(e.target.value)}
-            icon={<BriefcaseIcon size={16} />} 
+            icon={<Icon as={BriefcaseIcon} size={16} />}
             borderRadius="md"
-            _focus={{ borderColor: 'blue.500', boxShadow: `0 0 0 1px var(--chakra-colors-blue-500)`}}
+            borderColor={borderColor}
+            fontFamily="var(--font-inter)"
+            _focus={{ borderColor: primaryColor, boxShadow: `0 0 0 1px ${primaryColor}`}}
           >
             <option value="Information Technology">Information Technology</option>
             <option value="Agriculture">Agriculture</option>
             <option value="Construction">Construction</option>
             <option value="Healthcare">Healthcare</option>
-            {/* Add more industries as needed */}
           </Select>
           <Select 
             placeholder="Filter by Type" 
             flex={1} 
             value={filterType} 
             onChange={(e) => setFilterType(e.target.value)}
-            icon={<UsersIcon size={16} />} 
+            icon={<Icon as={UsersIcon} size={16} />} 
             borderRadius="md"
-            _focus={{ borderColor: 'blue.500', boxShadow: `0 0 0 1px var(--chakra-colors-blue-500)`}}
+            borderColor={borderColor}
+            fontFamily="var(--font-inter)"
+            _focus={{ borderColor: primaryColor, boxShadow: `0 0 0 1px ${primaryColor}`}}
           >
             <option value="Customer">Customer</option>
             <option value="Prospect">Prospect</option>
             <option value="Partner">Partner</option>
             <option value="Vendor">Vendor</option>
           </Select>
-          <Button leftIcon={<FilterIcon size={16} />} variant="outline" colorScheme="gray">
+          <Button leftIcon={<Icon as={FilterIcon} size={16} />} variant="outline" colorScheme="gray" fontFamily="var(--font-inter)">
             More Filters
           </Button>
         </HStack>
 
         <TableContainer>
           <Table variant="simple" size="md">
-            <Thead bg={useColorModeValue('gray.100', 'gray.700')}>
+            <Thead bg={useColorModeValue('gray.100', 'gray.800')}>
               <Tr>
-                <Th>Account Name</Th>
-                <Th>Industry</Th>
-                <Th>Type</Th>
-                <Th>Primary Contact</Th>
-                <Th>Phone</Th>
-                <Th>Last Activity</Th>
-                <Th>Actions</Th>
+                <Th fontFamily="var(--font-poppins)" color={headingColor}>Account Name</Th>
+                <Th fontFamily="var(--font-poppins)" color={headingColor}>Industry</Th>
+                <Th fontFamily="var(--font-poppins)" color={headingColor}>Type</Th>
+                <Th fontFamily="var(--font-poppins)" color={headingColor}>Primary Contact</Th>
+                <Th fontFamily="var(--font-poppins)" color={headingColor}>Phone</Th>
+                <Th fontFamily="var(--font-poppins)" color={headingColor}>Last Activity</Th>
+                <Th fontFamily="var(--font-poppins)" color={headingColor} textAlign="center">Actions</Th>
               </Tr>
             </Thead>
-            <Tbody>
+            <Tbody fontFamily="var(--font-inter)">
               {filteredAccounts.map((account) => (
                 <Tr key={account.id} _hover={{ bg: useColorModeValue('gray.50', 'gray.600'), transition: 'background-color 0.2s ease-in-out' }}>
                   <Td>
                     <NextLink href={`/accounts/${account.id}`} passHref>
-                      <Text as="a" fontWeight="medium" color="blue.500" _hover={{ textDecoration: 'underline' }}>
+                      <Text as="a" fontWeight="medium" color={primaryColor} _hover={{ textDecoration: 'underline' }}>
                         {account.name}
                       </Text>
                     </NextLink>
                   </Td>
-                  <Td>{account.industry}</Td>
+                  <Td color={textColor}>{account.industry}</Td>
                   <Td>
                     <Tag size="sm" colorScheme={AccountTypeColors[account.type] || 'gray'} variant="subtle" borderRadius="full">
                       {account.type}
@@ -207,18 +204,18 @@ export default function AccountsPage() {
                   <Td>
                     <HStack spacing={2}>
                       <Avatar size="sm" name={account.primaryContact.name} src={account.primaryContact.avatar} />
-                      <Text>{account.primaryContact.name}</Text>
+                      <Text color={textColor}>{account.primaryContact.name}</Text>
                     </HStack>
                   </Td>
-                  <Td>{account.phone}</Td>
-                  <Td>{new Date(account.lastActivity).toLocaleDateString()}</Td>
-                  <Td>
-                    <HStack spacing={2}>
+                  <Td color={textColor}>{account.phone}</Td>
+                  <Td color={textColor}>{new Date(account.lastActivity).toLocaleDateString()}</Td>
+                  <Td textAlign="center">
+                    <HStack spacing={1} justifyContent="center">
                       <NextLink href={`/accounts/${account.id}`} passHref>
-                        <IconButton as="a" icon={<EyeIcon size={18} />} aria-label="View account" variant="ghost" colorScheme="blue" size="sm" />
+                        <IconButton as="a" icon={<Icon as={EyeIcon} size={18} />} aria-label="View account" variant="ghost" colorScheme="blue" size="sm" />
                       </NextLink>
-                      <IconButton icon={<EditIcon size={18} />} aria-label="Edit account" variant="ghost" colorScheme="yellow" size="sm" onClick={() => alert(`Edit ${account.name}`)} />
-                      <IconButton icon={<Trash2Icon size={18} />} aria-label="Delete account" variant="ghost" colorScheme="red" size="sm" onClick={() => alert(`Delete ${account.name}`)} />
+                      <IconButton icon={<Icon as={EditIcon} size={18} />} aria-label="Edit account" variant="ghost" colorScheme="yellow" size="sm" onClick={() => alert(`Edit ${account.name}`)} />
+                      <IconButton icon={<Icon as={Trash2Icon} size={18} />} aria-label="Delete account" variant="ghost" colorScheme="red" size="sm" onClick={() => alert(`Delete ${account.name}`)} />
                     </HStack>
                   </Td>
                 </Tr>
@@ -229,11 +226,11 @@ export default function AccountsPage() {
         {filteredAccounts.length === 0 && (
           <Box textAlign="center" p={10}>
              <Icon as={BuildingIcon} boxSize={12} color="gray.400" mb={4} />
-            <Heading as="h3" size="md" color="gray.500">No Accounts Found</Heading>
-            <Text color="gray.400">Try adjusting your search or filters, or add a new account.</Text>
+            <Heading as="h3" size="md" color="gray.500" fontFamily="var(--font-poppins)">No Accounts Found</Heading>
+            <Text color="gray.400" fontFamily="var(--font-inter)">Try adjusting your search or filters, or add a new account.</Text>
           </Box>
         )}
       </Box>
-    </Box>
+    </AppLayout>
   )
 }
