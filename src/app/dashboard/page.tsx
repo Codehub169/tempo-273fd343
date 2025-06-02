@@ -1,7 +1,9 @@
 'use client';
 
-import { Box, Flex, Grid, GridItem, Heading, Text, Icon, SimpleGrid, Card, CardHeader, CardBody, Stat, StatLabel, StatNumber, StatHelpText, StatArrow, useColorModeValue, VStack, HStack, Button } from '@chakra-ui/react';
-import { FiUsers, FiTrendingUp, FiActivity, FiDollarSign, FiPlusCircle, FiList, FiBarChart2 } from 'react-icons/fi'; // Using react-icons as placeholder
+import { Box, Flex, Grid, GridItem, Heading, Text, Icon, SimpleGrid, Card, CardHeader, CardBody, Stat, StatLabel, StatNumber, StatHelpText, StatArrow, useColorModeValue, VStack, HStack } from '@chakra-ui/react';
+import { FiUsers, FiTrendingUp, FiActivity, FiDollarSign, FiPlusCircle, FiList, FiBarChart2 } from 'react-icons/fi';
+import AppLayout from '@/components/layouts/AppLayout';
+import { Button } from '@/components/ui/Button';
 
 // Placeholder data for dashboard cards - replace with actual data fetching
 const summaryStats = [
@@ -18,28 +20,28 @@ const recentActivities = [
 ];
 
 export default function DashboardPage() {
-  const primaryColor = "#0056B3";
-  const accentColor = "#28A745";
+  const primaryColor = "#0056B3"; // Defined in theme or constants later
+  // const accentColor = "#28A745"; // Defined in theme or constants later
   const cardBg = useColorModeValue('white', 'gray.800');
   const textColor = useColorModeValue('gray.600', 'gray.400');
   const headingColor = useColorModeValue('gray.700', 'white');
 
+  const breadcrumbs = [
+    { label: 'Dashboard' }
+  ];
+
   return (
-    // This Box would be the main content area within AppLayout in the future
-    <Box p={{ base: 4, md: 8 }} bg={useColorModeValue('gray.50', 'gray.900')} minH="100vh">
+    <AppLayout breadcrumbs={breadcrumbs}>
       <Flex direction="column" gap={8}>
         {/* Header Section */}
-        <Flex justifyContent="space-between" alignItems="center" mb={4}>
-          <Heading as="h1" size="xl" color={headingColor} fontFamily="Poppins, sans-serif">
+        <Flex justifyContent="space-between" alignItems="center" mb={4} wrap="wrap" gap={2}>
+          <Heading as="h1" size="xl" color={headingColor} fontFamily="var(--font-poppins)">
             CRM Dashboard
           </Heading>
           <Button 
-            leftIcon={<Icon as={FiPlusCircle} />} 
-            bg={accentColor} 
-            color={'white'} 
-            _hover={{ bg: '#218838' }}
-            fontFamily="Inter, sans-serif"
-            boxShadow="md"
+            leftIcon={<Icon as={FiPlusCircle} />}
+            variant="accent"
+            fontFamily="var(--font-inter)"
             size="lg"
           >
             Quick Add
@@ -52,14 +54,14 @@ export default function DashboardPage() {
             <Card key={stat.id} bg={cardBg} shadow="lg" borderRadius="xl" transition="all 0.3s ease-in-out" _hover={{ transform: 'translateY(-5px)', shadow: 'xl' }}>
               <CardHeader pb={2}>
                 <HStack justifyContent="space-between">
-                  <Text fontSize="md" fontWeight="medium" color={textColor} fontFamily="Inter, sans-serif">{stat.label}</Text>
+                  <Text fontSize="md" fontWeight="medium" color={textColor} fontFamily="var(--font-inter)">{stat.label}</Text>
                   <Icon as={stat.icon} w={8} h={8} color={stat.color} />
                 </HStack>
               </CardHeader>
               <CardBody pt={0}>
                 <Stat>
-                  <StatNumber fontSize="3xl" fontWeight="bold" color={headingColor} fontFamily="Poppins, sans-serif">{stat.value}</StatNumber>
-                  <StatHelpText fontFamily="Inter, sans-serif">
+                  <StatNumber fontSize="3xl" fontWeight="bold" color={headingColor} fontFamily="var(--font-poppins)">{stat.value}</StatNumber>
+                  <StatHelpText fontFamily="var(--font-inter)">
                     {stat.changeType !== 'info' && <StatArrow type={stat.changeType === 'increase' ? 'increase' : 'decrease'} />}
                     {stat.change}
                   </StatHelpText>
@@ -75,13 +77,13 @@ export default function DashboardPage() {
           <GridItem>
             <Card bg={cardBg} shadow="lg" borderRadius="xl" h={{ base: '300px', md: '400px' }}>
               <CardHeader>
-                <Heading size="md" color={headingColor} fontFamily="Poppins, sans-serif">Sales Performance</Heading>
+                <Heading size="md" color={headingColor} fontFamily="var(--font-poppins)">Sales Performance</Heading>
               </CardHeader>
               <CardBody>
                 <Flex justifyContent="center" alignItems="center" h="full" flexDirection="column" color={textColor}>
                   <Icon as={FiBarChart2} w={16} h={16} mb={4} />
-                  <Text fontSize="lg" fontFamily="Inter, sans-serif">Sales Performance Chart Placeholder</Text>
-                  <Text fontSize="sm" fontFamily="Inter, sans-serif">Detailed chart will be displayed here.</Text>
+                  <Text fontSize="lg" fontFamily="var(--font-inter)">Sales Performance Chart Placeholder</Text>
+                  <Text fontSize="sm" fontFamily="var(--font-inter)">Detailed chart will be displayed here.</Text>
                 </Flex>
               </CardBody>
             </Card>
@@ -91,28 +93,27 @@ export default function DashboardPage() {
           <GridItem>
             <Card bg={cardBg} shadow="lg" borderRadius="xl">
               <CardHeader>
-                <Heading size="md" color={headingColor} fontFamily="Poppins, sans-serif">Recent Activities</Heading>
+                <Heading size="md" color={headingColor} fontFamily="var(--font-poppins)">Recent Activities</Heading>
               </CardHeader>
               <CardBody>
                 <VStack spacing={4} align="stretch">
                   {recentActivities.map((activity) => (
-                    <Box key={activity.id} p={3} borderWidth="1px" borderColor={useColorModeValue('gray.200', 'gray.700')} borderRadius="md" _hover={{ borderColor: primaryColor, bg: useColorModeValue('gray.100', 'gray.700')}}>
-                      <Text fontWeight="medium" color={headingColor} fontFamily="Inter, sans-serif">{activity.type}: {activity.description}</Text>
-                      <Text fontSize="sm" color={textColor} fontFamily="Inter, sans-serif">{activity.time}</Text>
+                    <Box key={activity.id} p={3} borderWidth="1px" borderColor={useColorModeValue('gray.200', 'gray.700')} borderRadius="md" _hover={{ borderColor: primaryColor, bg: useColorModeValue('gray.50', 'gray.700')}}>
+                      <Text fontWeight="medium" color={headingColor} fontFamily="var(--font-inter)">{activity.type}: {activity.description}</Text>
+                      <Text fontSize="sm" color={textColor} fontFamily="var(--font-inter)">{activity.time}</Text>
                     </Box>
                   ))}
                   {recentActivities.length === 0 && (
-                    <Text color={textColor} fontFamily="Inter, sans-serif">No recent activities.</Text>
+                    <Text color={textColor} fontFamily="var(--font-inter)">No recent activities.</Text>
                   )}
                   <Button 
                     variant="outline" 
-                    colorScheme={primaryColor.split('.')[0]} // Assuming primaryColor is like 'blue.500'
-                    borderColor={primaryColor}
-                    color={primaryColor}
-                    _hover={{ bg: useColorModeValue(`${primaryColor.split('.')[0]}.50`, `${primaryColor.split('.')[0]}.700`) }}
                     leftIcon={<Icon as={FiList}/>}
                     mt={2}
-                    fontFamily="Inter, sans-serif"
+                    fontFamily="var(--font-inter)"
+                    // The custom Button's 'outline' variant should use primaryColor by default from theme.
+                    // Specific hover can be defined in theme or overridden here if necessary.
+                    // _hover={{ bg: useColorModeValue('blue.50', 'blue.900') }} // Example if specific hover needed
                   >
                     View All Activities
                   </Button>
@@ -122,6 +123,6 @@ export default function DashboardPage() {
           </GridItem>
         </Grid>
       </Flex>
-    </Box>
+    </AppLayout>
   );
 }

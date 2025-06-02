@@ -1,0 +1,28 @@
+/* Add any global base styles or resets here if needed */
+/* For example, to make next/font variables available globally for Chakra */
+/* 
+  next/font with the `variable` option automatically defines these CSS variables.
+  You can then use them in your Chakra UI theme or global styles.
+*/
+
+body {
+  /* 
+    Set the default body font. 
+    Chakra UI's theme can override this for specific components or globally.
+    Ensure your Chakra theme (theme.ts or extendTheme) is configured to use these fonts.
+    Example for Chakra theme:
+    const theme = extendTheme({
+      fonts: {
+        heading: "var(--font-poppins), sans-serif",
+        body: "var(--font-inter), sans-serif",
+      },
+    });
+  */
+  font-family: var(--font-inter);
+  /* Add other global base styles below */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Ensure Chakra UI components can inherit these fonts if not explicitly set in theme */

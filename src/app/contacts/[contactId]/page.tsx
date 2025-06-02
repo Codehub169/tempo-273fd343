@@ -1,18 +1,9 @@
 'use client';
 
-import { ArrowLeft, Edit3, PlusCircle, Calendar, Briefcase, User, Phone, Mail, MapPin, MessageSquare, ListChecks, Building } from 'lucide-react';
+import { ArrowLeft, Edit3, PlusCircle, Calendar, Briefcase, User, Phone, Mail, MapPin, MessageSquare } from 'lucide-react';
 import NextLink from 'next/link';
 import {
   Box,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Container,
-  Divider,
   Flex,
   Heading,
   HStack,
@@ -29,10 +20,16 @@ import {
   TabPanel,
   List,
   ListItem,
-  ListIcon,
   Avatar,
   Badge,
+  Card, 
+  CardBody, 
+  CardHeader,
+  Link as ChakraLink
 } from '@chakra-ui/react';
+import AppLayout from '@/components/layouts/AppLayout';
+import { Button } from '@/components/ui/Button';
+import React from 'react'; // Added React for React.ElementType
 
 // Mock data for a single contact - replace with actual data fetching
 const contactData = {
@@ -79,59 +76,45 @@ export default function ContactDetailPage({ params }: ContactDetailPageProps) {
   const primaryColor = useColorModeValue('blue.600', 'blue.300');
   const cardBg = useColorModeValue('white', 'gray.700');
   const borderColor = useColorModeValue('gray.200', 'gray.600');
-  const accentColor = "#28A745"; // Green for positive actions
   const subtleTextColor = useColorModeValue('gray.600', 'gray.400');
 
+  const breadcrumbs = [
+    { label: 'Dashboard', href: '/dashboard' },
+    { label: 'Contacts', href: '/contacts' },
+    { label: contact.fullName }
+  ];
+
   return (
-    <Container maxW="container.xl" py={8}>
+    <AppLayout breadcrumbs={breadcrumbs}>
       <VStack spacing={6} align="stretch">
-        {/* Breadcrumbs and Header */}
         <Flex justifyContent="space-between" alignItems="center" wrap="wrap">
-          <Box mb={{ base: 4, md: 0 }}>
-            <Breadcrumb spacing="8px" separator={<Icon as={User} color="gray.500" />}>
-              <BreadcrumbItem>
-                <NextLink href="/dashboard" passHref>
-                  <BreadcrumbLink>Dashboard</BreadcrumbLink>
-                </NextLink>
-              </BreadcrumbItem>
-              <BreadcrumbItem>
-                <NextLink href="/contacts" passHref>
-                  <BreadcrumbLink>Contacts</BreadcrumbLink>
-                </NextLink>
-              </BreadcrumbItem>
-              <BreadcrumbItem isCurrentPage>
-                <BreadcrumbLink href={`/contacts/${contact.id}`} fontWeight="medium" color={primaryColor}>{contact.fullName}</BreadcrumbLink>
-              </BreadcrumbItem>
-            </Breadcrumb>
-          </Box>
-          <HStack spacing={3}>
+          {/* Page title/breadcrumbs are handled by AppLayout */}
+          <HStack spacing={3} ml={{base: 0, md: 'auto'}} mt={{base: 4, md: 0}}> 
             <Button 
-              leftIcon={<Icon as={Edit3} />} 
-              colorScheme="blue" 
+              leftIcon={<Icon as={Edit3} />}
               variant="outline"
-              _hover={{ bg: 'blue.50', shadow: 'sm' }}
+              colorScheme="blue"
             >
               Edit Contact
             </Button>
             <Button 
-              leftIcon={<Icon as={PlusCircle} />} 
-              bg={accentColor} 
-              color="white"
-              _hover={{ bg: 'green.600', shadow: 'md' }}
+              leftIcon={<Icon as={PlusCircle} />}
+              variant="accent"
             >
               Log Activity
             </Button>
           </HStack>
         </Flex>
 
-        {/* Contact Overview Card */}
-        <Card variant="outline" bg={cardBg} shadow="sm" borderRadius="md">
+        <Card variant="outline" bg={cardBg} shadow="sm" borderRadius="md" borderColor={borderColor}>
           <CardHeader pb={2}>
             <Flex alignItems="center">
-                <Avatar name={contact.fullName} src={`https://ui-avatars.com/api/?name=${contact.firstName}+${contact.lastName}&background=0056B3&color=fff&size=128`} size="lg" mr={4}/>
+                <Avatar name={contact.fullName} src={`https://ui-avatars.com/api/?name=${encodeURIComponent(contact.firstName)}+${encodeURIComponent(contact.lastName)}&background=0056B3&color=fff&size=128`} size="lg" mr={4}/>
                 <Box>
-                    <Heading size="xl" fontFamily="Poppins, sans-serif" color={primaryColor}>{contact.fullName}</Heading>
-                    <Text fontSize="lg" color={subtleTextColor}>{contact.title} at <NextLink href={`/accounts/${contact.account.id}`} passHref><Text as="span" _hover={{textDecoration:'underline'}} color={primaryColor} fontWeight="medium">{contact.account.name}</Text></NextLink></Text>
+                    <Heading size="xl" fontFamily="var(--font-poppins)" color={primaryColor}>{contact.fullName}</Heading>
+                    <Text fontSize="lg" color={subtleTextColor} fontFamily="var(--font-inter)">
+                        {contact.title} at <NextLink href={`/accounts/${contact.account.id}`} passHref legacyBehavior><ChakraLink _hover={{textDecoration:'underline'}} color={primaryColor} fontWeight="medium">{contact.account.name}</ChakraLink></NextLink>
+                    </Text>
                 </Box>
             </Flex>
           </CardHeader>
@@ -147,8 +130,8 @@ export default function ContactDetailPage({ params }: ContactDetailPageProps) {
 
             {contact.address && (
               <Box mb={6}>
-                <Heading size="md" fontFamily="Poppins, sans-serif" mb={2}>Address</Heading>
-                <HStack spacing={2} color={subtleTextColor}>
+                <Heading size="md" fontFamily="var(--font-poppins)" mb={2}>Address</Heading>
+                <HStack spacing={2} color={subtleTextColor} fontFamily="var(--font-inter)">
                     <Icon as={MapPin} /> 
                     <Text>{`${contact.address.street}, ${contact.address.city}, ${contact.address.state} ${contact.address.postalCode}, ${contact.address.country}`}</Text>
                 </HStack>
@@ -157,27 +140,26 @@ export default function ContactDetailPage({ params }: ContactDetailPageProps) {
             
             {contact.description && (
               <Box pt={4} borderTopWidth="1px" borderColor={borderColor}>
-                <Heading size="md" fontFamily="Poppins, sans-serif" mb={2}>Description / Notes</Heading>
-                <Text whiteSpace="pre-wrap" color={subtleTextColor} bg={useColorModeValue('gray.50', 'gray.800')} p={3} borderRadius="md">{contact.description}</Text>
+                <Heading size="md" fontFamily="var(--font-poppins)" mb={2}>Description / Notes</Heading>
+                <Text whiteSpace="pre-wrap" color={subtleTextColor} bg={useColorModeValue('gray.50', 'gray.800')} p={3} borderRadius="md" fontFamily="var(--font-inter)">{contact.description}</Text>
               </Box>
             )}
           </CardBody>
         </Card>
 
-        {/* Tabs for Activities, Related Leads/Deals, etc. */}
-        <Card variant="outline" bg={cardBg} shadow="sm" borderRadius="md">
+        <Card variant="outline" bg={cardBg} shadow="sm" borderRadius="md" borderColor={borderColor}>
           <CardBody>
             <Tabs variant="enclosed-colored" colorScheme="blue">
               <TabList>
-                <Tab _selected={{ color: 'white', bg: primaryColor }} fontWeight="medium">Activities ({contact.activities.length})</Tab>
-                <Tab _selected={{ color: 'white', bg: primaryColor }} fontWeight="medium">Linked Leads ({contact.linkedLeads.length})</Tab>
-                <Tab _selected={{ color: 'white', bg: primaryColor }} fontWeight="medium">History</Tab>
+                <Tab _selected={{ color: 'white', bg: primaryColor }} fontWeight="medium" fontFamily="var(--font-inter)">Activities ({contact.activities.length})</Tab>
+                <Tab _selected={{ color: 'white', bg: primaryColor }} fontWeight="medium" fontFamily="var(--font-inter)">Linked Leads ({contact.linkedLeads.length})</Tab>
+                <Tab _selected={{ color: 'white', bg: primaryColor }} fontWeight="medium" fontFamily="var(--font-inter)">History</Tab>
               </TabList>
               <TabPanels>
                 <TabPanel>
                   <VStack spacing={4} align="stretch">
                     <Flex justifyContent="space-between" alignItems="center" mb={2}>
-                      <Heading size="md" fontFamily="Poppins, sans-serif">Recent Activities</Heading>
+                      <Heading size="md" fontFamily="var(--font-poppins)">Recent Activities</Heading>
                       <Button size="sm" variant="outline" colorScheme="blue" leftIcon={<Icon as={PlusCircle}/>}>Add Activity</Button>
                     </Flex>
                     {contact.activities.length > 0 ? (
@@ -187,45 +169,45 @@ export default function ContactDetailPage({ params }: ContactDetailPageProps) {
                             <Flex align="center" justify="space-between">
                                 <HStack spacing={3}>
                                   <Icon as={getActivityIcon(activity.type)} color={primaryColor} boxSize={6} />
-                                  <Box>
+                                  <Box fontFamily="var(--font-inter)">
                                     <Text fontWeight="semibold">{activity.summary}</Text>
                                     <Text fontSize="sm" color={subtleTextColor}>{activity.type} - {new Date(activity.date).toLocaleDateString()}</Text>
                                   </Box>
                                 </HStack>
-                                <Badge colorScheme={getActivityTypeColor(activity.type)} variant="subtle">{activity.type}</Badge>
+                                <Badge colorScheme={getActivityTypeColor(activity.type)} variant="subtle" fontFamily="var(--font-inter)">{activity.type}</Badge>
                             </Flex>
-                            {activity.notes && <Text fontSize="sm" color={subtleTextColor} mt={2} pl={9}>{activity.notes}</Text>}
+                            {activity.notes && <Text fontSize="sm" color={subtleTextColor} mt={2} pl={9} fontFamily="var(--font-inter)">{activity.notes}</Text>}
                           </ListItem>
                         ))}
                       </List>
                     ) : (
-                      <Text>No activities logged for this contact yet.</Text>
+                      <Text fontFamily="var(--font-inter)">No activities logged for this contact yet.</Text>
                     )}
                   </VStack>
                 </TabPanel>
                 <TabPanel>
                    <VStack spacing={4} align="stretch">
-                    <Heading size="md" fontFamily="Poppins, sans-serif" mb={2}>Associated Leads/Deals</Heading>
+                    <Heading size="md" fontFamily="var(--font-poppins)" mb={2}>Associated Leads/Deals</Heading>
                     {contact.linkedLeads.length > 0 ? (
                       <List spacing={3}>
                         {contact.linkedLeads.map(lead => (
                           <ListItem key={lead.id} p={3} borderWidth="1px" borderColor={borderColor} borderRadius="md" _hover={{ shadow: 'sm', borderColor: primaryColor}} transition="all 0.2s ease-in-out">
                             <Flex justifyContent="space-between" alignItems="center">
-                              <NextLink href={`/leads/${lead.id}`} passHref>
-                                <Text fontWeight="medium" color={primaryColor} _hover={{textDecoration: 'underline'}}>{lead.name}</Text>
+                              <NextLink href={`/leads/${lead.id}`} passHref legacyBehavior>
+                                <ChakraLink fontWeight="medium" color={primaryColor} _hover={{textDecoration: 'underline'}} fontFamily="var(--font-inter)">{lead.name}</ChakraLink>
                               </NextLink>
-                              <Tag colorScheme={getLeadStatusColorScheme(lead.status)} size="sm">{lead.status}</Tag>
+                              <Tag colorScheme={getLeadStatusColorScheme(lead.status)} size="sm" fontFamily="var(--font-inter)">{lead.status}</Tag>
                             </Flex>
                           </ListItem>
                         ))}
                       </List>
                     ) : (
-                      <Text>No leads associated with this contact.</Text>
+                      <Text fontFamily="var(--font-inter)">No leads associated with this contact.</Text>
                     )}
                   </VStack>
                 </TabPanel>
                 <TabPanel>
-                  <Text>Placeholder for contact history and audit trail.</Text>
+                  <Text fontFamily="var(--font-inter)">Placeholder for contact history and audit trail.</Text>
                 </TabPanel>
               </TabPanels>
             </Tabs>
@@ -238,7 +220,7 @@ export default function ContactDetailPage({ params }: ContactDetailPageProps) {
           </Button>
         </NextLink>
       </VStack>
-    </Container>
+    </AppLayout>
   );
 }
 
@@ -253,13 +235,13 @@ const InfoItem = ({ icon, label, value, isLink }: InfoItemProps) => {
   const subtleTextColor = useColorModeValue('gray.600', 'gray.400');
   const primaryColor = useColorModeValue('blue.600', 'blue.300');
   return (
-    <HStack spacing={3} align="start">
+    <HStack spacing={3} align="start" fontFamily="var(--font-inter)">
       <Icon as={icon} boxSize={5} color={primaryColor} mt={1} />
       <Box>
         <Text fontSize="sm" color={subtleTextColor} fontWeight="medium">{label}</Text>
         {isLink ? (
-          <NextLink href={isLink} passHref target={isLink.startsWith('mailto:') || isLink.startsWith('tel:') ? '_self' : '_blank'}>
-            <Text fontWeight="semibold" _hover={{ textDecoration: 'underline', color: primaryColor }}>{value}</Text>
+          <NextLink href={isLink} passHref legacyBehavior>
+            <ChakraLink target={isLink.startsWith('mailto:') || isLink.startsWith('tel:') ? '_self' : '_blank'} fontWeight="semibold" _hover={{ textDecoration: 'underline', color: primaryColor }}>{value}</ChakraLink>
           </NextLink>
         ) : (
           <Text fontWeight="semibold">{value}</Text>
@@ -284,13 +266,13 @@ const getActivityTypeColor = (type: string) => {
 };
 
 const getLeadStatusColorScheme = (status: string) => {
-    switch (status) {
-      case 'New': return 'gray';
-      case 'Qualification': return 'yellow';
-      case 'Proposal': return 'orange';
-      case 'Negotiation': return 'purple';
-      case 'Closed Won': return 'green';
-      case 'Closed Lost': return 'red';
+    switch (status.toLowerCase()) {
+      case 'new': return 'gray';
+      case 'qualification': return 'yellow';
+      case 'proposal': return 'orange';
+      case 'negotiation': return 'purple';
+      case 'closed won': return 'green';
+      case 'closed lost': return 'red';
       default: return 'blue';
     }
-  };
+};
