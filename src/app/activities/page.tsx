@@ -26,7 +26,8 @@ import {
   MenuList,
   MenuItem,
   MenuDivider,
-  Avatar
+  Avatar,
+  Link as ChakraLink
 } from '@chakra-ui/react'
 import {
   ChevronRightIcon,
@@ -224,8 +225,8 @@ export default function ActivitiesPage() {
                     <Heading as="h3" size="md" fontFamily={'Inter, sans-serif'} noOfLines={2}>{activity.subject}</Heading>
                     <Text fontSize="sm" color={textColor} mt={1}>
                       Related to: 
-                      <NextLink href={`/${activity.relatedTo.type.toLowerCase()}s/${activity.relatedTo.id}`} passHref>
-                        <Link color="blue.500" fontWeight="medium" _hover={{textDecoration: 'underline'}} ml={1}>{activity.relatedTo.name}</Link>
+                      <NextLink href={`/${activity.relatedTo.type.toLowerCase()}s/${activity.relatedTo.id}`} passHref legacyBehavior>
+                        <ChakraLink color="blue.500" fontWeight="medium" _hover={{textDecoration: 'underline'}} ml={1}>{activity.relatedTo.name}</ChakraLink>
                       </NextLink>
                        {' ('}{activity.relatedTo.type}{')'}
                     </Text>
