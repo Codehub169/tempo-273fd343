@@ -1,13 +1,15 @@
-"use client";
+'use client';
 
 import { ChakraProvider } from "@chakra-ui/react";
-// Optional: Import your custom Chakra theme if you have one
-// import theme from "./theme"; // e.g., src/theme.ts
+import React from "react";
+
+// TODO: Import and apply custom theme if available
+// import theme from "./theme"; // Example: if theme is in app/theme.ts
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    // If using a custom theme, pass it to ChakraProvider: <ChakraProvider theme={theme}>
-    <ChakraProvider>
+    // <ChakraProvider theme={theme}>
+    <ChakraProvider> {/* Using default theme for now */}
       {children}
     </ChakraProvider>
   );
