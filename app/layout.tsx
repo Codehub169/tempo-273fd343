@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import { Providers } from "./providers";
-import "./globals.css"; // Assuming globals.css is in the app/ directory
+import "./globals.css"; // Assuming globals.css is in the app/ directory or a root CSS import
 
 const inter = Inter({
   subsets: ["latin"],
@@ -19,6 +19,9 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "CRM Application",
   description: "A modern Customer Relationship Management platform.",
+  // Consider adding viewport and icons for better PWA/mobile experience
+  // viewport: 'width=device-width, initial-scale=1',
+  // icons: { icon: '/favicon.ico' }, // Example: if you have a favicon
 };
 
 export default function RootLayout({
