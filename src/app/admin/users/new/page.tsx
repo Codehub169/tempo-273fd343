@@ -25,6 +25,7 @@ import {
   InputGroup,
   InputRightElement,
   IconButton,
+  Flex
 } from '@chakra-ui/react';
 import {
   UserPlus,
@@ -76,9 +77,13 @@ const NewUserPage = () => {
       });
       return;
     }
-    // TODO: Add more comprehensive validation
-    // In a real application, never log passwords or sensitive data.
-    console.log('New User Data (Simulated - contains sensitive info):', formData);
+    // TODO: Add more comprehensive validation (e.g., password strength, email format if not relying on type="email")
+    // In a real application, never log passwords or sensitive data to the console.
+    console.log('New User Data (Simulated - contains sensitive info):', {
+      ...formData,
+      password: '[REDACTED]',
+      confirmPassword: '[REDACTED]',
+    });
     toast({
       title: 'User Created',
       description: `User ${formData.firstName} ${formData.lastName} has been successfully created (simulated).`,
@@ -87,8 +92,20 @@ const NewUserPage = () => {
       isClosable: true,
       position: 'top-right',
     });
-    // Reset form or redirect (not implemented for this mock)
-    // setFormData({ firstName: '', lastName: '', email: '', role: '', password: '', confirmPassword: '', status: 'Active' });
+    // Example: Reset form after successful submission (uncomment if needed)
+    // setFormData({
+    //   firstName: '',
+    //   lastName: '',
+    //   email: '',
+    //   role: '',
+    //   password: '',
+    //   confirmPassword: '',
+    //   status: 'Active',
+    // });
+    // Example: Redirect user (uncomment and use Next.js router if needed)
+    // import { useRouter } from 'next/navigation';
+    // const router = useRouter();
+    // router.push('/admin/users');
   };
 
   const breadcrumbs = [
@@ -100,7 +117,7 @@ const NewUserPage = () => {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Box as="form" onSubmit={handleSubmit}>
-        <Flex justify="space-between" align="center" mb={6}>
+        <Flex justify="space-between" align="center" mb={6} wrap="wrap" gap={4}>
             <HStack>
                 <Icon as={UserPlus} w={8} h={8} color={primaryColor} />
                 <VStack align="start" spacing={0}>
@@ -146,8 +163,9 @@ const NewUserPage = () => {
           <CardBody pt={4}>
             <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
               <FormControl isRequired>
-                <FormLabel fontFamily="var(--font-inter)" color={headingColor}>First Name</FormLabel>
+                <FormLabel htmlFor='firstName' fontFamily="var(--font-inter)" color={headingColor}>First Name</FormLabel>
                 <Input
+                  id='firstName'
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
@@ -159,8 +177,9 @@ const NewUserPage = () => {
                 />
               </FormControl>
               <FormControl isRequired>
-                <FormLabel fontFamily="var(--font-inter)" color={headingColor}>Last Name</FormLabel>
+                <FormLabel htmlFor='lastName' fontFamily="var(--font-inter)" color={headingColor}>Last Name</FormLabel>
                 <Input
+                  id='lastName'
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
@@ -172,8 +191,9 @@ const NewUserPage = () => {
                 />
               </FormControl>
               <FormControl isRequired>
-                <FormLabel fontFamily="var(--font-inter)" color={headingColor}>Email Address</FormLabel>
+                <FormLabel htmlFor='email' fontFamily="var(--font-inter)" color={headingColor}>Email Address</FormLabel>
                 <Input
+                  id='email'
                   name="email"
                   type="email"
                   value={formData.email}
@@ -187,8 +207,9 @@ const NewUserPage = () => {
                 <FormHelperText fontFamily="var(--font-inter)" color={textColor}>This will be used for login.</FormHelperText>
               </FormControl>
               <FormControl isRequired>
-                <FormLabel fontFamily="var(--font-inter)" color={headingColor}>Role</FormLabel>
+                <FormLabel htmlFor='role' fontFamily="var(--font-inter)" color={headingColor}>Role</FormLabel>
                 <Select
+                  id='role'
                   name="role"
                   value={formData.role}
                   onChange={handleChange}
@@ -211,9 +232,10 @@ const NewUserPage = () => {
             <Heading size="md" fontFamily="var(--font-poppins)" color={headingColor} mb={4}>Security & Status</Heading>
             <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
               <FormControl isRequired>
-                <FormLabel fontFamily="var(--font-inter)" color={headingColor}>Password</FormLabel>
+                <FormLabel htmlFor='password' fontFamily="var(--font-inter)" color={headingColor}>Password</FormLabel>
                 <InputGroup>
                   <Input
+                    id='password'
                     name="password"
                     type={showPassword ? 'text' : 'password'}
                     value={formData.password}
@@ -223,6 +245,7 @@ const NewUserPage = () => {
                     borderColor={borderColor}
                     _hover={{ borderColor: 'gray.400' }}
                     _focus={{ borderColor: primaryColor, boxShadow: `0 0 0 1px ${primaryColor}`}}
+                    autoComplete="new-password"
                   />
                   <InputRightElement>
                     <IconButton 
@@ -235,9 +258,10 @@ const NewUserPage = () => {
                 </InputGroup>
               </FormControl>
               <FormControl isRequired>
-                <FormLabel fontFamily="var(--font-inter)" color={headingColor}>Confirm Password</FormLabel>
+                <FormLabel htmlFor='confirmPassword' fontFamily="var(--font-inter)" color={headingColor}>Confirm Password</FormLabel>
                  <InputGroup>
                     <Input
+                        id='confirmPassword'
                         name="confirmPassword"
                         type={showConfirmPassword ? 'text' : 'password'}
                         value={formData.confirmPassword}
@@ -247,10 +271,11 @@ const NewUserPage = () => {
                         borderColor={borderColor}
                         _hover={{ borderColor: 'gray.400' }}
                         _focus={{ borderColor: primaryColor, boxShadow: `0 0 0 1px ${primaryColor}`}}
+                        autoComplete="new-password"
                     />
                     <InputRightElement>
                         <IconButton 
-                            aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                            aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
                             icon={showConfirmPassword ? <EyeOff /> : <Eye />}
                             variant="ghost"
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -259,8 +284,9 @@ const NewUserPage = () => {
                 </InputGroup>
               </FormControl>
               <FormControl>
-                <FormLabel fontFamily="var(--font-inter)" color={headingColor}>Status</FormLabel>
+                <FormLabel htmlFor='status' fontFamily="var(--font-inter)" color={headingColor}>Status</FormLabel>
                 <Select
+                  id='status'
                   name="status"
                   value={formData.status}
                   onChange={handleChange}
