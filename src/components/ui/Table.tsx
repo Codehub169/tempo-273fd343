@@ -13,13 +13,13 @@ import {
   Box,
   Text,
   Skeleton,
-  Stack,
   Icon,
   TableProps as ChakraTableProps,
-  ThProps,
-  TdProps,
+  TableColumnHeaderProps as ThProps,
+  TableCellProps as TdProps,
+  useColorModeValue,
 } from '@chakra-ui/react';
-import { AlertTriangle, Database } from 'lucide-react'; // Example icons
+import { Database } from 'lucide-react';
 
 export interface ColumnDefinition<T> {
   accessor: keyof T | string; // Can be a key or a custom accessor string for nested or computed values
@@ -54,31 +54,60 @@ export function CustomTable<T extends { id?: string | number }>({
   onRowClick,
   variant = 'simple',
   size = 'md',
-  colorScheme = 'gray',
+  // colorScheme prop is inherited from ChakraTableProps via ...rest
   ...rest
 }: CustomTableProps<T>) {
 
-  const getNestedValue = (obj: any, path: string): any => {
-    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+  const getNestedValue = (obj: any, path: string | keyof T): any => {
+    const pathString = String(path); // Ensure path is a string for split
+    return pathString.split('.').reduce((acc, part) => acc && acc[part], obj);
   };
 
+  // Theme-aware color definitions
+  const headerBgColor = useColorModeValue('gray.50', 'gray.800');
+  const headerTextColor = useColorModeValue('gray.600', 'gray.300');
+  const tableBorderColor = useColorModeValue('gray.200', 'gray.700');
+  const tableContainerBgColor = useColorModeValue('white', 'gray.700');
+  const rowHoverBgColor = useColorModeValue('gray.100', 'gray.600');
+  const cellTextColor = useColorModeValue('gray.700', 'gray.200');
+  const captionColor = useColorModeValue('gray.700', 'gray.200');
+  const defaultEmptyStateBg = useColorModeValue('gray.50', 'gray.800');
+  const defaultEmptyStateBorderColor = useColorModeValue('gray.200', 'gray.700');
+
   const defaultEmptyState = (
-    <Box textAlign="center" p={10} borderWidth="1px" borderRadius="md" borderColor="gray.200" bg="gray.50">
+    <Box 
+      textAlign="center" 
+      p={10} 
+      borderWidth="1px" 
+      borderRadius="md" 
+      borderColor={defaultEmptyStateBorderColor} 
+      bg={defaultEmptyStateBg}
+    >
       <Icon as={Database} boxSize={12} color="gray.400" mb={4} />
-      <Text fontSize="xl" fontWeight="medium" color="gray.600">No Data Available</Text>
-      <Text color="gray.500">There is no data to display at the moment.</Text>
+      <Text fontSize="xl" fontWeight="medium" color={useColorModeValue('gray.600', 'gray.300')}>No Data Available</Text>
+      <Text color={useColorModeValue('gray.500', 'gray.400')}>There is no data to display at the moment.</Text>
     </Box>
   );
 
   if (isLoading) {
     return (
       <TableContainer>
-        <ChakraTable variant={variant} size={size} colorScheme={colorScheme} {...rest}>
+        <ChakraTable variant={variant} size={size} {...rest}>
           {caption && <TableCaption placement="top">{caption}</TableCaption>}
-          <Thead bg="#F8F9FA">
+          <Thead bg={headerBgColor}>
             <Tr>
               {columns.map((col, index) => (
-                <Th key={`header-${index}`} {...col.headerProps} isNumeric={col.isNumeric} fontFamily="Poppins, sans-serif" fontWeight="semibold" color="#343A40" textTransform="uppercase" letterSpacing="wider">
+                <Th 
+                  key={`header-${index}-${col.accessor.toString()}`} 
+                  {...col.headerProps} 
+                  isNumeric={col.isNumeric} 
+                  fontFamily="var(--font-poppins)" 
+                  fontWeight="semibold" 
+                  color={headerTextColor} 
+                  textTransform="uppercase" 
+                  letterSpacing="wider"
+                  borderColor={tableBorderColor}
+                >
                   {col.header}
                 </Th>
               ))}
@@ -87,8 +116,8 @@ export function CustomTable<T extends { id?: string | number }>({
           <Tbody>
             {[...Array(loadingRowCount)].map((_, rowIndex) => (
               <Tr key={`skeleton-row-${rowIndex}`}>
-                {columns.map((_, cellIndex) => (
-                  <Td key={`skeleton-cell-${rowIndex}-${cellIndex}`}>
+                {columns.map((col, cellIndex) => (
+                  <Td key={`skeleton-cell-${rowIndex}-${cellIndex}-${col.accessor.toString()}`} borderColor={tableBorderColor}>
                     <Skeleton height="20px" />
                   </Td>
                 ))}
@@ -105,26 +134,39 @@ export function CustomTable<T extends { id?: string | number }>({
   }
 
   return (
-    <TableContainer borderWidth="1px" borderColor="#DEE2E6" borderRadius="lg" bg="white" boxShadow="sm">
-      <ChakraTable variant={variant} size={size} colorScheme={colorScheme} {...rest}>
-        {caption && <TableCaption placement="top" fontWeight="medium" fontFamily="Poppins, sans-serif" fontSize="lg" color="#343A40" m={0} p={4} borderBottomWidth="1px" borderColor="#DEE2E6">{caption}</TableCaption>}
-        <Thead bg="#F8F9FA">
+    <TableContainer borderWidth="1px" borderColor={tableBorderColor} borderRadius="lg" bg={tableContainerBgColor} boxShadow="sm">
+      <ChakraTable variant={variant} size={size} {...rest}>
+        {caption && 
+          <TableCaption 
+            placement="top" 
+            fontWeight="medium" 
+            fontFamily="var(--font-poppins)" 
+            fontSize="lg" 
+            color={captionColor} 
+            m={0} 
+            p={4} 
+            borderBottomWidth="1px" 
+            borderColor={tableBorderColor}
+          >
+            {caption}
+          </TableCaption>}
+        <Thead bg={headerBgColor}>
           <Tr>
             {columns.map((col, index) => (
               <Th 
-                key={`header-${index}`} 
+                key={`header-${index}-${col.accessor.toString()}`} 
                 {...col.headerProps} 
                 isNumeric={col.isNumeric} 
-                fontFamily="Poppins, sans-serif" 
+                fontFamily="var(--font-poppins)" 
                 fontWeight="semibold" 
-                color="#343A40" 
+                color={headerTextColor} 
                 fontSize="sm"
                 py={4}
                 px={6}
                 textTransform="uppercase"
                 letterSpacing="wider"
                 borderBottomWidth="2px"
-                borderColor="#DEE2E6"
+                borderColor={tableBorderColor}
               >
                 {col.header}
               </Th>
@@ -135,24 +177,24 @@ export function CustomTable<T extends { id?: string | number }>({
           {data.map((item, rowIndex) => (
             <Tr 
               key={item.id || `row-${rowIndex}`} 
-              _hover={{ bg: '#F8F9FA', cursor: onRowClick ? 'pointer' : 'default'}}
+              _hover={{ bg: rowHoverBgColor, cursor: onRowClick ? 'pointer' : 'default'}}
               onClick={() => onRowClick && onRowClick(item)}
               transition="background-color 0.2s ease-in-out"
             >
               {columns.map((col, cellIndex) => (
                 <Td 
-                  key={`cell-${rowIndex}-${cellIndex}`} 
+                  key={`cell-${rowIndex}-${cellIndex}-${col.accessor.toString()}`} 
                   {...col.cellProps} 
                   isNumeric={col.isNumeric}
-                  fontFamily="Inter, sans-serif"
+                  fontFamily="var(--font-inter)"
                   fontSize="sm"
-                  color="#343A40"
+                  color={cellTextColor}
                   py={4}
                   px={6}
                   borderBottomWidth="1px"
-                  borderColor="#DEE2E6"
+                  borderColor={tableBorderColor}
                 >
-                  {col.cell ? col.cell(item, rowIndex) : String(getNestedValue(item, col.accessor as string) ?? '')}
+                  {col.cell ? col.cell(item, rowIndex) : String(getNestedValue(item, col.accessor) ?? '')}
                 </Td>
               ))}
             </Tr>
