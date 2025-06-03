@@ -13,14 +13,10 @@ import {
   HStack,
   Icon,
   useColorModeValue,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
   SimpleGrid,
   Card,
   CardHeader,
   CardBody,
-  CardFooter,
   Divider,
   Tag,
   Tabs,
@@ -38,27 +34,27 @@ import {
   useToast
 } from '@chakra-ui/react';
 import {
-  FiUser,
-  FiEdit2,
-  FiTrash2,
-  FiArrowLeft,
-  FiMail,
-  FiShield,
-  FiBriefcase,
-  FiCalendar,
-  FiClock,
-  FiActivity,
-  FiLogIn,
-  FiKey,
-  FiToggleLeft,
-  FiToggleRight,
-  FiEye,
-  FiMessageSquare,
-  FiTrendingUp,
-  FiFileText,
-  FiChevronRight,
+  User,
+  Edit2,
+  Trash2,
+  ArrowLeft,
+  Mail,
+  Shield,
+  Briefcase,
+  Calendar,
+  Clock,
+  Activity,
+  LogIn,
+  Key,
+  ToggleLeft,
+  ToggleRight,
+  MessageSquare,
+  TrendingUp,
+  FileText,
+  ChevronRight,
 } from 'lucide-react';
 import AppLayout from '@/components/layouts/AppLayout';
+import { IconType } from 'react-icons'; // Retained for InfoItem if it's meant to be generic, though current usage is lucide
 
 // Mock User Data (expanded for detail view)
 const mockUsersData: { [key: string]: any } = {
@@ -110,17 +106,20 @@ const UserDetailPage = () => {
   const borderColor = useColorModeValue('gray.200', 'gray.700');
   const primaryColor = "#0056B3";
   const accentColor = "#28A745";
-  const errorColor = "#DC3545";
+  
+  const headingColor = useColorModeValue('gray.800', 'whiteAlpha.900');
+  const textColor = useColorModeValue('gray.600', 'gray.400');
+  const subtleTextColor = useColorModeValue('gray.700', 'gray.300');
 
   if (!user) {
     return (
       <AppLayout pageTitle="User Not Found">
         <Flex direction="column" align="center" justify="center" minH="60vh">
-            <Icon as={FiUser} boxSize={24} color="gray.400" mb={6} />
-            <Heading fontFamily="Poppins, sans-serif" mb={4}>User Not Found</Heading>
-            <Text color="#6C757D" fontFamily="Inter, sans-serif" mb={6}>The user you are looking for does not exist or may have been removed.</Text>
+            <Icon as={User} boxSize={24} color="gray.400" mb={6} />
+            <Heading fontFamily="var(--font-poppins)" mb={4} color={headingColor}>User Not Found</Heading>
+            <Text color={textColor} fontFamily="var(--font-inter)" mb={6}>The user you are looking for does not exist or may have been removed.</Text>
             <NextLink href="/admin/users" passHref>
-            <Button as="a" leftIcon={<Icon as={FiArrowLeft} />} colorScheme="blue" variant="solid" bg={primaryColor} _hover={{bg: '#004494'}}>
+            <Button as="a" leftIcon={<Icon as={ArrowLeft} />} colorScheme="blue" variant="solid" bg={primaryColor} _hover={{bg: '#004494'}}>
                 Back to Users List
             </Button>
             </NextLink>
@@ -140,20 +139,20 @@ const UserDetailPage = () => {
     const newStatus = user.status === 'Active' ? 'Inactive' : 'Active';
     mockUsersData[userId].status = newStatus; // This won't persist across reloads, just for demo
     toast({
-        title: `User ${newStatus === 'Active' ? 'Activated' : 'Deactivated'}`, 
+        title: `User ${newStatus === 'Active' ? 'Activated' : 'Deactivated'}`,
         description: `${user.firstName} ${user.lastName}'s status has been changed to ${newStatus}.`,
         status: 'success',
         duration: 3000,
         isClosable: true,
         position: 'top-right'
     });
-    // Force re-render if state was local, or refetch data in real app
+    // Force re-render if state was local, or refetch data in real app. For this demo, toast might trigger re-render.
   };
 
   const handleDeleteUser = () => {
     toast({
-        title: 'User Deletion (Simulated)', 
-        description: `User ${user.firstName} ${user.lastName} would be deleted. This is a placeholder.`, 
+        title: 'User Deletion (Simulated)',
+        description: `User ${user.firstName} ${user.lastName} would be deleted. This is a placeholder.`,
         status: 'warning',
         duration: 3000,
         isClosable: true,
@@ -165,9 +164,9 @@ const UserDetailPage = () => {
     <HStack spacing={3} align="start">
       <Icon as={icon} mt={1} color="gray.500" />
       <Box>
-        <Text fontSize="sm" color="#6C757D" fontFamily="Inter, sans-serif">{label}</Text>
+        <Text fontSize="sm" color={textColor} fontFamily="var(--font-inter)">{label}</Text>
         {typeof value === 'string' ? (
-          <Text fontWeight="medium" color="#343A40" fontFamily="Inter, sans-serif">{value}</Text>
+          <Text fontWeight="medium" color={headingColor} fontFamily="var(--font-inter)">{value}</Text>
         ) : value}
       </Box>
     </HStack>
@@ -175,11 +174,11 @@ const UserDetailPage = () => {
   
   const getActivityIcon = (type: string) => {
     switch (type) {
-      case 'login': return FiLogIn;
-      case 'update': return FiEdit2;
-      case 'create': return FiFileText;
-      case 'assign': return FiTrendingUp;
-      default: return FiActivity;
+      case 'login': return LogIn;
+      case 'update': return Edit2;
+      case 'create': return FileText;
+      case 'assign': return TrendingUp;
+      default: return Activity;
     }
   };
 
@@ -190,10 +189,10 @@ const UserDetailPage = () => {
         <HStack spacing={4}>
             <Avatar size="lg" name={`${user.firstName} ${user.lastName}`} src={user.avatarUrl} boxShadow="md" borderColor={primaryColor} borderWidth={2} />
             <VStack align="start" spacing={0}>
-                <Heading as="h1" size="xl" fontFamily="Poppins, sans-serif" color="#343A40">
+                <Heading as="h1" size="xl" fontFamily="var(--font-poppins)" color={headingColor}>
                 {user.firstName} {user.lastName}
                 </Heading>
-                <Text fontSize="md" color="#6C757D" fontFamily="Inter, sans-serif">
+                <Text fontSize="md" color={textColor} fontFamily="var(--font-inter)">
                 User ID: {user.id}
                 </Text>
             </VStack>
@@ -201,21 +200,21 @@ const UserDetailPage = () => {
         <Spacer />
         <HStack spacing={3} mt={{base: 4, md: 0}}>
           <NextLink href={`/admin/users/${userId}/edit`} passHref> {/* Placeholder edit link */}
-            <Button as="a" leftIcon={<Icon as={FiEdit2} />} variant="outline" borderColor={borderColor} color="#343A40" _hover={{bg: useColorModeValue('gray.100', 'gray.600')}} fontFamily="Inter, sans-serif">
+            <Button as="a" leftIcon={<Icon as={Edit2} />} variant="outline" borderColor={borderColor} color={headingColor} _hover={{bg: useColorModeValue('gray.100', 'gray.600')}} fontFamily="var(--font-inter)">
               Edit User
             </Button>
           </NextLink>
           <Button 
-            leftIcon={<Icon as={user.status === 'Active' ? FiToggleLeft : FiToggleRight} />}
+            leftIcon={<Icon as={user.status === 'Active' ? ToggleLeft : ToggleRight} />}
             onClick={handleToggleStatus}
             colorScheme={user.status === 'Active' ? 'yellow' : 'green'}
-            fontFamily="Inter, sans-serif"
+            fontFamily="var(--font-inter)"
           >
             {user.status === 'Active' ? 'Deactivate' : 'Activate'}
           </Button>
           <IconButton 
             aria-label='Delete User'
-            icon={<FiTrash2 />} 
+            icon={<Icon as={Trash2} />}
             colorScheme='red' 
             variant='solid'
             onClick={handleDeleteUser}
@@ -229,22 +228,22 @@ const UserDetailPage = () => {
           <Card bg={cardBg} shadow="xl" borderRadius="lg" borderWidth="1px" borderColor={borderColor}>
             <CardHeader pb={2}>
               <HStack>
-                 <Icon as={FiUser} w={6} h={6} color={primaryColor} />
-                 <Heading size="md" fontFamily="Poppins, sans-serif" color="#343A40">User Profile</Heading>
+                 <Icon as={User} w={6} h={6} color={primaryColor} />
+                 <Heading size="md" fontFamily="var(--font-poppins)" color={headingColor}>User Profile</Heading>
               </HStack>
             </CardHeader>
             <CardBody>
               <SimpleGrid columns={{ base: 1, md: 2 }} spacing={5}>
-                <InfoItem icon={FiMail} label="Email Address" value={user.email} />
-                <InfoItem icon={FiShield} label="Role" value={<Tag size="md" variant="subtle" colorScheme={user.role === 'Administrator' ? 'purple' : 'blue'} borderRadius="full">{user.role}</Tag>} />
-                <InfoItem icon={FiCalendar} label="Joined Date" value={new Date(user.joinedDate).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })} />
-                <InfoItem icon={FiClock} label="Last Login" value={new Date(user.lastLogin).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })} />
-                <InfoItem icon={FiBriefcase} label="Status" value={<Badge colorScheme={user.status === 'Active' ? 'green' : 'red'} variant="solid" borderRadius="full" px={2} py={1}>{user.status}</Badge>} />
+                <InfoItem icon={Mail} label="Email Address" value={user.email} />
+                <InfoItem icon={Shield} label="Role" value={<Tag size="md" variant="subtle" colorScheme={user.role === 'Administrator' ? 'purple' : 'blue'} borderRadius="full">{user.role}</Tag>} />
+                <InfoItem icon={Calendar} label="Joined Date" value={new Date(user.joinedDate).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })} />
+                <InfoItem icon={Clock} label="Last Login" value={new Date(user.lastLogin).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })} />
+                <InfoItem icon={Briefcase} label="Status" value={<Badge colorScheme={user.status === 'Active' ? 'green' : 'red'} variant="solid" borderRadius="full" px={2} py={1}>{user.status}</Badge>} />
               </SimpleGrid>
               {user.bio && (
                 <>
                   <Divider my={6} borderColor={borderColor} />
-                  <InfoItem icon={FiMessageSquare} label="Biography" value={<Text whiteSpace="pre-wrap" fontSize="sm" color="#4A5568" fontFamily="Inter, sans-serif">{user.bio}</Text>} />
+                  <InfoItem icon={MessageSquare} label="Biography" value={<Text whiteSpace="pre-wrap" fontSize="sm" color={subtleTextColor} fontFamily="var(--font-inter)">{user.bio}</Text>} />
                 </>
               )}
             </CardBody>
@@ -256,15 +255,15 @@ const UserDetailPage = () => {
             <Card bg={cardBg} shadow="xl" borderRadius="lg" borderWidth="1px" borderColor={borderColor}>
                 <CardHeader pb={2}>
                     <HStack>
-                        <Icon as={FiKey} w={6} h={6} color={accentColor} />
-                        <Heading size="md" fontFamily="Poppins, sans-serif" color="#343A40">Permissions</Heading>
+                        <Icon as={Key} w={6} h={6} color={accentColor} />
+                        <Heading size="md" fontFamily="var(--font-poppins)" color={headingColor}>Permissions</Heading>
                     </HStack>
                 </CardHeader>
                 <CardBody>
                     <List spacing={2}>
                         {user.permissions.map((permission: string, index: number) => (
-                        <ListItem key={index} fontSize="sm" fontFamily="Inter, sans-serif" color="#4A5568">
-                            <ListIcon as={FiChevronRight} color={accentColor} />
+                        <ListItem key={index} fontSize="sm" fontFamily="var(--font-inter)" color={subtleTextColor}>
+                            <ListIcon as={ChevronRight} color={accentColor} />
                             {permission}
                         </ListItem>
                         ))}
@@ -278,9 +277,9 @@ const UserDetailPage = () => {
       <Card mt={6} bg={cardBg} shadow="xl" borderRadius="lg" borderWidth="1px" borderColor={borderColor}>
         <Tabs variant="enclosed-colored" colorScheme="blue" m={1}>
           <TabList borderBottomColor={borderColor}>
-            <Tab _selected={{ color: primaryColor, bg: useColorModeValue('blue.50', 'blue.900'), borderColor: borderColor, borderBottomColor: cardBg }} fontFamily="Poppins, sans-serif">Recent Activity</Tab>
-            <Tab _selected={{ color: primaryColor, bg: useColorModeValue('blue.50', 'blue.900'), borderColor: borderColor, borderBottomColor: cardBg }} fontFamily="Poppins, sans-serif">Assigned Items (Placeholder)</Tab>
-            <Tab _selected={{ color: primaryColor, bg: useColorModeValue('blue.50', 'blue.900'), borderColor: borderColor, borderBottomColor: cardBg }} fontFamily="Poppins, sans-serif">Notes (Placeholder)</Tab>
+            <Tab _selected={{ color: primaryColor, bg: useColorModeValue('blue.50', 'blue.900'), borderColor: borderColor, borderBottomColor: cardBg }} fontFamily="var(--font-poppins)">Recent Activity</Tab>
+            <Tab _selected={{ color: primaryColor, bg: useColorModeValue('blue.50', 'blue.900'), borderColor: borderColor, borderBottomColor: cardBg }} fontFamily="var(--font-poppins)">Assigned Items (Placeholder)</Tab>
+            <Tab _selected={{ color: primaryColor, bg: useColorModeValue('blue.50', 'blue.900'), borderColor: borderColor, borderBottomColor: cardBg }} fontFamily="var(--font-poppins)">Notes (Placeholder)</Tab>
           </TabList>
           <TabPanels>
             <TabPanel>
@@ -288,10 +287,10 @@ const UserDetailPage = () => {
                     <List spacing={4}>
                         {user.recentActivity.map((activity: any) => (
                         <ListItem key={activity.id} display="flex" alignItems="center" p={2} _hover={{bg: useColorModeValue('gray.100', 'gray.700')}} borderRadius="md">
-                            <ListIcon as={getActivityIcon(activity.type)} color={`${accentColor}.500`} boxSize={5} />
+                            <ListIcon as={getActivityIcon(activity.type)} color={accentColor} boxSize={5} />
                             <Box ml={2}>
-                            <Text fontWeight="medium" fontFamily="Inter, sans-serif" color="#343A40">{activity.description}</Text>
-                            <Text fontSize="xs" color="#6C757D" fontFamily="Inter, sans-serif">
+                            <Text fontWeight="medium" fontFamily="var(--font-inter)" color={headingColor}>{activity.description}</Text>
+                            <Text fontSize="xs" color={textColor} fontFamily="var(--font-inter)">
                                 {new Date(activity.timestamp).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
                             </Text>
                             </Box>
@@ -299,14 +298,14 @@ const UserDetailPage = () => {
                         ))}
                     </List>
                 ) : (
-                    <Text color="#6C757D" fontFamily="Inter, sans-serif">No recent activity recorded for this user.</Text>
+                    <Text color={textColor} fontFamily="var(--font-inter)">No recent activity recorded for this user.</Text>
                 )}
             </TabPanel>
             <TabPanel>
-              <Text color="#6C757D" fontFamily="Inter, sans-serif">Placeholder for items assigned to this user (e.g., leads, tasks).</Text>
+              <Text color={textColor} fontFamily="var(--font-inter)">Placeholder for items assigned to this user (e.g., leads, tasks).</Text>
             </TabPanel>
             <TabPanel>
-              <Text color="#6C757D" fontFamily="Inter, sans-serif">Placeholder for notes related to this user.</Text>
+              <Text color={textColor} fontFamily="var(--font-inter)">Placeholder for notes related to this user.</Text>
             </TabPanel>
           </TabPanels>
         </Tabs>

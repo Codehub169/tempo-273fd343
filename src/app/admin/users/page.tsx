@@ -25,29 +25,24 @@ import {
   Flex,
   Icon,
   useColorModeValue,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
   Tag,
   TagLabel,
-  TagLeftIcon,
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
 } from '@chakra-ui/react';
 import {
-  FiPlus,
-  FiSearch,
-  FiFilter,
-  FiEye,
-  FiEdit2,
-  FiTrash2,
-  FiMoreVertical,
-  FiUserCheck,
-  FiUserX,
-  FiUsers,
-  FiChevronRight,
+  Plus,
+  Search,
+  Filter,
+  Eye,
+  Edit2,
+  Trash2,
+  MoreVertical,
+  UserCheck,
+  UserX,
+  Users,
 } from 'lucide-react';
 import AppLayout from '@/components/layouts/AppLayout';
 
@@ -124,6 +119,9 @@ const UsersPage = () => {
   const borderColor = useColorModeValue('gray.200', 'gray.600');
   const primaryColor = "#0056B3";
   const accentColor = "#28A745";
+  
+  const headingColor = useColorModeValue('gray.800', 'whiteAlpha.900');
+  const textColor = useColorModeValue('gray.600', 'gray.400');
 
   const filteredUsers = useMemo(() => {
     return mockUsers.filter((user) => {
@@ -133,10 +131,10 @@ const UsersPage = () => {
       const statusMatch = statusFilter === '' || user.status === statusFilter;
       return (nameMatch || emailMatch) && roleMatch && statusMatch;
     });
-  }, [searchTerm, roleFilter, statusFilter]);
+  }, [searchTerm, roleFilter, statusFilter, mockUsers]); // Added mockUsers to dependency array for correctness, though it's constant here
 
   const breadcrumbs = [
-    { label: 'Admin', href: '/admin/users' }, // Technically admin root, but fine for now
+    { label: 'Admin', href: '/admin/users' }, 
     { label: 'Users' },
   ];
 
@@ -146,21 +144,21 @@ const UsersPage = () => {
         {/* Header Section */}
         <Flex justify="space-between" align="center" p={6} borderBottomWidth="1px" borderColor={borderColor}>
           <VStack align="start">
-            <Heading as="h1" size="lg" fontFamily="Poppins, sans-serif" color="#343A40">
+            <Heading as="h1" size="lg" fontFamily="var(--font-poppins)" color={headingColor}>
               Manage Users
             </Heading>
-            <Text fontSize="sm" color="#6C757D" fontFamily="Inter, sans-serif">
+            <Text fontSize="sm" color={textColor} fontFamily="var(--font-inter)">
               Oversee all user accounts, roles, and statuses within the CRM.
             </Text>
           </VStack>
           <NextLink href="/admin/users/new" passHref>
             <Button
               as="a"
-              leftIcon={<Icon as={FiPlus} />}
+              leftIcon={<Icon as={Plus} />}
               bg={accentColor}
               color="white"
               _hover={{ bg: '#218838' }}
-              fontFamily="Inter, sans-serif"
+              fontFamily="var(--font-inter)"
               size="md"
               boxShadow="sm"
             >
@@ -173,7 +171,7 @@ const UsersPage = () => {
         <Flex p={6} gap={4} direction={{ base: 'column', md: 'row' }} align={{ base: 'stretch', md: 'center' }}>
           <InputGroup flex={1}>
             <InputLeftElement pointerEvents="none">
-              <Icon as={FiSearch} color="gray.400" />
+              <Icon as={Search} color="gray.400" />
             </InputLeftElement>
             <Input
               type="text"
@@ -184,17 +182,17 @@ const UsersPage = () => {
               borderColor={borderColor}
               _hover={{ borderColor: 'gray.400' }}
               _focus={{ borderColor: primaryColor, boxShadow: `0 0 0 1px ${primaryColor}`}}
-              fontFamily="Inter, sans-serif"
+              fontFamily="var(--font-inter)"
             />
           </InputGroup>
           <Select
             placeholder="Filter by Role"
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            icon={<FiFilter />}
+            icon={<Icon as={Filter} color="gray.400" />}
             bg={cardBg}
             borderColor={borderColor}
-            fontFamily="Inter, sans-serif"
+            fontFamily="var(--font-inter)"
             minW="200px"
             _hover={{ borderColor: 'gray.400' }}
             _focus={{ borderColor: primaryColor, boxShadow: `0 0 0 1px ${primaryColor}`}}
@@ -207,10 +205,10 @@ const UsersPage = () => {
             placeholder="Filter by Status"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            icon={<FiFilter />}
+            icon={<Icon as={Filter} color="gray.400" />}
             bg={cardBg}
             borderColor={borderColor}
-            fontFamily="Inter, sans-serif"
+            fontFamily="var(--font-inter)"
             minW="200px"
             _hover={{ borderColor: 'gray.400' }}
             _focus={{ borderColor: primaryColor, boxShadow: `0 0 0 1px ${primaryColor}`}}
@@ -226,11 +224,11 @@ const UsersPage = () => {
             <Table variant="simple" bg={cardBg} borderRadius="md" shadow="sm" borderWidth="1px" borderColor={borderColor}>
               <Thead bg={useColorModeValue('gray.100', 'gray.800')}>
                 <Tr>
-                  <Th fontFamily="Poppins, sans-serif" color="#343A40">User</Th>
-                  <Th fontFamily="Poppins, sans-serif" color="#343A40">Role</Th>
-                  <Th fontFamily="Poppins, sans-serif" color="#343A40">Status</Th>
-                  <Th fontFamily="Poppins, sans-serif" color="#343A40">Last Login</Th>
-                  <Th fontFamily="Poppins, sans-serif" color="#343A40">Actions</Th>
+                  <Th fontFamily="var(--font-poppins)" color={headingColor}>User</Th>
+                  <Th fontFamily="var(--font-poppins)" color={headingColor}>Role</Th>
+                  <Th fontFamily="var(--font-poppins)" color={headingColor}>Status</Th>
+                  <Th fontFamily="var(--font-poppins)" color={headingColor}>Last Login</Th>
+                  <Th fontFamily="var(--font-poppins)" color={headingColor}>Actions</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -241,25 +239,25 @@ const UsersPage = () => {
                         <Avatar size="sm" name={user.name} src={user.avatarUrl} />
                         <VStack align="start" spacing={0}>
                           <NextLink href={`/admin/users/${user.id}`} passHref>
-                            <Text fontWeight="medium" color={primaryColor} _hover={{ textDecoration: 'underline'}} cursor="pointer" fontFamily="Inter, sans-serif">
+                            <Text as="a" fontWeight="medium" color={primaryColor} _hover={{ textDecoration: 'underline'}} cursor="pointer" fontFamily="var(--font-inter)">
                               {user.name}
                             </Text>
                           </NextLink>
-                          <Text fontSize="sm" color="#6C757D" fontFamily="Inter, sans-serif">{user.email}</Text>
+                          <Text fontSize="sm" color={textColor} fontFamily="var(--font-inter)">{user.email}</Text>
                         </VStack>
                       </HStack>
                     </Td>
                     <Td>
                       <Tag size="md" variant="subtle" colorScheme={getRoleColorScheme(user.role)} borderRadius="full">
-                        <TagLabel fontFamily="Inter, sans-serif">{user.role}</TagLabel>
+                        <TagLabel fontFamily="var(--font-inter)">{user.role}</TagLabel>
                       </Tag>
                     </Td>
                     <Td>
-                      <Badge colorScheme={getStatusColorScheme(user.status)} variant="solid" borderRadius="full" px={2} py={1} fontFamily="Inter, sans-serif">
+                      <Badge colorScheme={getStatusColorScheme(user.status)} variant="solid" borderRadius="full" px={2} py={1} fontFamily="var(--font-inter)">
                         {user.status}
                       </Badge>
                     </Td>
-                    <Td fontSize="sm" color="#6C757D" fontFamily="Inter, sans-serif">
+                    <Td fontSize="sm" color={textColor} fontFamily="var(--font-inter)">
                       {new Date(user.lastLogin).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })}
                     </Td>
                     <Td>
@@ -267,28 +265,28 @@ const UsersPage = () => {
                         <MenuButton
                           as={IconButton}
                           aria-label='Options'
-                          icon={<FiMoreVertical />}
+                          icon={<Icon as={MoreVertical} />}
                           variant='ghost'
                           size='sm'
-                          color="#6C757D"
+                          color={textColor}
                         />
                         <MenuList minW="150px" shadow="lg" borderColor={borderColor}>
-                          <MenuItem as={NextLink} href={`/admin/users/${user.id}`} icon={<Icon as={FiEye} boxSize={4} color="gray.500"/>} fontFamily="Inter, sans-serif">
+                          <MenuItem as={NextLink} href={`/admin/users/${user.id}`} icon={<Icon as={Eye} boxSize={4} color="gray.500"/>} fontFamily="var(--font-inter)">
                             View Details
                           </MenuItem>
-                          <MenuItem as={NextLink} href={`/admin/users/${user.id}/edit`} icon={<Icon as={FiEdit2} boxSize={4} color="gray.500"/>} fontFamily="Inter, sans-serif"> {/* Placeholder Edit Link */}
+                          <MenuItem as={NextLink} href={`/admin/users/${user.id}/edit`} icon={<Icon as={Edit2} boxSize={4} color="gray.500"/>} fontFamily="var(--font-inter)"> {/* Placeholder Edit Link */}
                             Edit User
                           </MenuItem>
                           {user.status === 'Active' ? (
-                            <MenuItem icon={<Icon as={FiUserX} boxSize={4} color="orange.500"/>} color="orange.500" fontFamily="Inter, sans-serif">
+                            <MenuItem icon={<Icon as={UserX} boxSize={4} color="orange.500"/>} color="orange.500" fontFamily="var(--font-inter)">
                               Deactivate User
                             </MenuItem>
                           ) : (
-                            <MenuItem icon={<Icon as={FiUserCheck} boxSize={4} color="green.500"/>} color="green.500" fontFamily="Inter, sans-serif">
+                            <MenuItem icon={<Icon as={UserCheck} boxSize={4} color="green.500"/>} color="green.500" fontFamily="var(--font-inter)">
                               Activate User
                             </MenuItem>
                           )}
-                          <MenuItem icon={<Icon as={FiTrash2} boxSize={4} color="red.500"/>} color="red.500" fontFamily="Inter, sans-serif">
+                          <MenuItem icon={<Icon as={Trash2} boxSize={4} color="red.500"/>} color="red.500" fontFamily="var(--font-inter)">
                             Delete User
                           </MenuItem>
                         </MenuList>
@@ -300,9 +298,9 @@ const UsersPage = () => {
             </Table>
           ) : (
             <Flex direction="column" align="center" justify="center" p={10} bg={cardBg} borderRadius="md" borderWidth="1px" borderColor={borderColor} minH="300px">
-              <Icon as={FiUsers} boxSize={16} color="gray.400" mb={4} />
-              <Heading as="h3" size="md" color="#343A40" fontFamily="Poppins, sans-serif" mb={2}>No Users Found</Heading>
-              <Text color="#6C757D" fontFamily="Inter, sans-serif">Try adjusting your search or filter criteria.</Text>
+              <Icon as={Users} boxSize={16} color="gray.400" mb={4} />
+              <Heading as="h3" size="md" color={headingColor} fontFamily="var(--font-poppins)" mb={2}>No Users Found</Heading>
+              <Text color={textColor} fontFamily="var(--font-inter)">Try adjusting your search or filter criteria.</Text>
             </Flex>
           )}
         </Box>

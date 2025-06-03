@@ -16,9 +16,6 @@ import {
   HStack,
   Icon,
   useColorModeValue,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
   SimpleGrid,
   Card,
   CardHeader,
@@ -30,12 +27,11 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import {
-  FiUserPlus,
-  FiArrowLeft,
-  FiSave,
-  FiEye, 
-  FiEyeOff,
-  FiChevronRight,
+  UserPlus,
+  ArrowLeft,
+  Save,
+  Eye, 
+  EyeOff,
 } from 'lucide-react';
 import AppLayout from '@/components/layouts/AppLayout';
 
@@ -58,6 +54,9 @@ const NewUserPage = () => {
   const primaryColor = "#0056B3";
   const accentColor = "#28A745";
 
+  const headingColor = useColorModeValue('gray.800', 'whiteAlpha.900');
+  const textColor = useColorModeValue('gray.600', 'gray.400');
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -78,8 +77,8 @@ const NewUserPage = () => {
       return;
     }
     // TODO: Add more comprehensive validation
-
-    console.log('New User Data:', formData);
+    // In a real application, never log passwords or sensitive data.
+    console.log('New User Data (Simulated - contains sensitive info):', formData);
     toast({
       title: 'User Created',
       description: `User ${formData.firstName} ${formData.lastName} has been successfully created (simulated).`,
@@ -89,6 +88,7 @@ const NewUserPage = () => {
       position: 'top-right',
     });
     // Reset form or redirect (not implemented for this mock)
+    // setFormData({ firstName: '', lastName: '', email: '', role: '', password: '', confirmPassword: '', status: 'Active' });
   };
 
   const breadcrumbs = [
@@ -102,12 +102,12 @@ const NewUserPage = () => {
       <Box as="form" onSubmit={handleSubmit}>
         <Flex justify="space-between" align="center" mb={6}>
             <HStack>
-                <Icon as={FiUserPlus} w={8} h={8} color={primaryColor} />
+                <Icon as={UserPlus} w={8} h={8} color={primaryColor} />
                 <VStack align="start" spacing={0}>
-                    <Heading as="h1" size="lg" fontFamily="Poppins, sans-serif" color="#343A40">
+                    <Heading as="h1" size="lg" fontFamily="var(--font-poppins)" color={headingColor}>
                         Create New User
                     </Heading>
-                    <Text fontSize="sm" color="#6C757D" fontFamily="Inter, sans-serif">
+                    <Text fontSize="sm" color={textColor} fontFamily="var(--font-inter)">
                         Fill in the details to add a new user to the system.
                     </Text>
                 </VStack>
@@ -116,23 +116,23 @@ const NewUserPage = () => {
             <NextLink href="/admin/users" passHref>
               <Button
                 as="a"
-                leftIcon={<Icon as={FiArrowLeft} />}
+                leftIcon={<Icon as={ArrowLeft} />}
                 variant="outline"
                 borderColor={borderColor}
-                color="#343A40"
+                color={headingColor}
                 _hover={{ bg: useColorModeValue('gray.100', 'gray.600')}}
-                fontFamily="Inter, sans-serif"
+                fontFamily="var(--font-inter)"
               >
                 Back to Users
               </Button>
             </NextLink>
             <Button
               type="submit"
-              leftIcon={<Icon as={FiSave} />}
+              leftIcon={<Icon as={Save} />}
               bg={accentColor}
               color="white"
               _hover={{ bg: '#218838' }}
-              fontFamily="Inter, sans-serif"
+              fontFamily="var(--font-inter)"
             >
               Save User
             </Button>
@@ -141,12 +141,12 @@ const NewUserPage = () => {
 
         <Card bg={cardBg} shadow="xl" borderRadius="lg" borderWidth="1px" borderColor={borderColor}>
           <CardHeader pb={2}>
-            <Heading size="md" fontFamily="Poppins, sans-serif" color="#343A40">User Information</Heading>
+            <Heading size="md" fontFamily="var(--font-poppins)" color={headingColor}>User Information</Heading>
           </CardHeader>
           <CardBody pt={4}>
             <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
               <FormControl isRequired>
-                <FormLabel fontFamily="Inter, sans-serif" color="#343A40">First Name</FormLabel>
+                <FormLabel fontFamily="var(--font-inter)" color={headingColor}>First Name</FormLabel>
                 <Input
                   name="firstName"
                   value={formData.firstName}
@@ -159,7 +159,7 @@ const NewUserPage = () => {
                 />
               </FormControl>
               <FormControl isRequired>
-                <FormLabel fontFamily="Inter, sans-serif" color="#343A40">Last Name</FormLabel>
+                <FormLabel fontFamily="var(--font-inter)" color={headingColor}>Last Name</FormLabel>
                 <Input
                   name="lastName"
                   value={formData.lastName}
@@ -172,7 +172,7 @@ const NewUserPage = () => {
                 />
               </FormControl>
               <FormControl isRequired>
-                <FormLabel fontFamily="Inter, sans-serif" color="#343A40">Email Address</FormLabel>
+                <FormLabel fontFamily="var(--font-inter)" color={headingColor}>Email Address</FormLabel>
                 <Input
                   name="email"
                   type="email"
@@ -184,10 +184,10 @@ const NewUserPage = () => {
                   _hover={{ borderColor: 'gray.400' }}
                   _focus={{ borderColor: primaryColor, boxShadow: `0 0 0 1px ${primaryColor}`}}
                 />
-                <FormHelperText fontFamily="Inter, sans-serif">This will be used for login.</FormHelperText>
+                <FormHelperText fontFamily="var(--font-inter)" color={textColor}>This will be used for login.</FormHelperText>
               </FormControl>
               <FormControl isRequired>
-                <FormLabel fontFamily="Inter, sans-serif" color="#343A40">Role</FormLabel>
+                <FormLabel fontFamily="var(--font-inter)" color={headingColor}>Role</FormLabel>
                 <Select
                   name="role"
                   value={formData.role}
@@ -201,17 +201,17 @@ const NewUserPage = () => {
                   <option value="Administrator">Administrator</option>
                   <option value="Sales Manager">Sales Manager</option>
                   <option value="Sales Representative">Sales Representative</option>
-                  <option value="Support Staff">Support Staff</option> {/* Added one more role */}
+                  <option value="Support Staff">Support Staff</option>
                 </Select>
               </FormControl>
             </SimpleGrid>
             
             <Divider my={8} borderColor={borderColor}/>
 
-            <Heading size="md" fontFamily="Poppins, sans-serif" color="#343A40" mb={4}>Security & Status</Heading>
+            <Heading size="md" fontFamily="var(--font-poppins)" color={headingColor} mb={4}>Security & Status</Heading>
             <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
               <FormControl isRequired>
-                <FormLabel fontFamily="Inter, sans-serif" color="#343A40">Password</FormLabel>
+                <FormLabel fontFamily="var(--font-inter)" color={headingColor}>Password</FormLabel>
                 <InputGroup>
                   <Input
                     name="password"
@@ -227,7 +227,7 @@ const NewUserPage = () => {
                   <InputRightElement>
                     <IconButton 
                         aria-label={showPassword ? 'Hide password' : 'Show password'}
-                        icon={showPassword ? <FiEyeOff /> : <FiEye />}
+                        icon={showPassword ? <EyeOff /> : <Eye />}
                         variant="ghost"
                         onClick={() => setShowPassword(!showPassword)}
                     />
@@ -235,7 +235,7 @@ const NewUserPage = () => {
                 </InputGroup>
               </FormControl>
               <FormControl isRequired>
-                <FormLabel fontFamily="Inter, sans-serif" color="#343A40">Confirm Password</FormLabel>
+                <FormLabel fontFamily="var(--font-inter)" color={headingColor}>Confirm Password</FormLabel>
                  <InputGroup>
                     <Input
                         name="confirmPassword"
@@ -251,7 +251,7 @@ const NewUserPage = () => {
                     <InputRightElement>
                         <IconButton 
                             aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
-                            icon={showConfirmPassword ? <FiEyeOff /> : <FiEye />}
+                            icon={showConfirmPassword ? <EyeOff /> : <Eye />}
                             variant="ghost"
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                         />
@@ -259,7 +259,7 @@ const NewUserPage = () => {
                 </InputGroup>
               </FormControl>
               <FormControl>
-                <FormLabel fontFamily="Inter, sans-serif" color="#343A40">Status</FormLabel>
+                <FormLabel fontFamily="var(--font-inter)" color={headingColor}>Status</FormLabel>
                 <Select
                   name="status"
                   value={formData.status}
